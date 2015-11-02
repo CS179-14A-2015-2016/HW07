@@ -13,6 +13,7 @@ Make sure to:
 * Use proper collision detection between box and circle (we discussed this in class).
 * Measure time in SECONDS (not in MILLISECONDS).
 * Use `<random>`  for random sources (use this for [reference](http://en.cppreference.com/w/cpp/numeric/random)). Don't use `rand()`
+* MAKE YOUR CODE READABLE.
 
 Here's the previous specs:
 ---
