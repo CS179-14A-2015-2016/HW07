@@ -16,6 +16,9 @@
 ///////////////////
 #define PI 3.14159265
 
+//The game is in fixed time-stamp
+//set in 30 frames per second
+
 
 Vector windCurr;
 Vector tankSize(70, 50);
@@ -47,6 +50,9 @@ bool setAngle = false;
 bool isFiring = false;
 bool first = true;
 const sf::Time TimePerFrame = sf::seconds(1.0/30.f);
+bool newRound = true;
+int score1st = 0;
+int score2nd = 0;
 
 
 int main()
@@ -90,29 +96,81 @@ int main()
         return EXIT_FAILURE;
 
     //Make a Text object using the loaded font
+    //"WIND" text object
     sf::Text txt;
     txt.setFont(customFont);
-    txt.setCharacterSize(50);
-    txt.setPosition(gameWidth/2.f -200, gameHeight/2.f);
+    txt.setCharacterSize(200);
+    //txt.setPosition(gameWidth/2.f -200, gameHeight/2.f);
     txt.setColor(sf::Color::White);
-    txt.setString("WELCOME TO WORCHBOUND");
+    txt.setPosition((gameWidth/2.f) - 100,-150);
+    //txt.setString("123456789101112131415161718192021222324252627282930AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+    //Wind value text object
+    sf::Text windVal;
+    windVal.setFont(customFont);
+    windVal.setCharacterSize(70);
+    windVal.setColor(sf::Color::White);
+    windVal.setPosition((gameWidth/2.f) - 100,0);
+
+    //Score for Tank 1
+    sf::Text score1;
+    score1.setFont(customFont);
+    score1.setCharacterSize(70);
+    score1.setColor(sf::Color::White);
+    score1.setPosition((gameWidth/10.f) + 35,0);
+
+    //Score for Tank 2
+    sf::Text score2;
+    score2.setFont(customFont);
+    score2.setCharacterSize(70);
+    score2.setColor(sf::Color::White);
+    score2.setPosition(8 * (gameWidth/10.f) + 35,0);
 
 
     sf::Clock clock;
-    Vector wind = wp.generateWind();
-    acc.x = wind.x;
+
+    //Set gravity as y component for acceleration vector
     acc.y = gravity;
     while(window.isOpen())
     {
+        txt.setString("WIND:");
+        //Generate Wind
+        if(newRound == true)
+        {
+            Vector wind = wp.generateWind();
+            acc.x = wind.x;
+            newRound = false;
+        }
+        //Set wind indication as an arrow
+        if(acc.x < 0)
+        {
+            float intensity = -1 * std::round(acc.x/50);
+            string arrow = "<";
+            for(int i = 0; i < intensity * 2; i++) arrow = arrow + "-";
+            windVal.setString(arrow);
+        }
+        else if(acc.x > 0)
+        {
+            float intensity = std::round(acc.x/50);
+            string arrow = "";
+            for(int i = 0; i < intensity * 2; i++) arrow = arrow + "-";
+            arrow = arrow + ">";
+            windVal.setString(arrow);
+        }
+        else if(acc.x == 0) windVal.setString("No wind is occuring");
 
+        //Set the Scoreboard
+        score1.setString(std::to_string(score1st));
+        score2.setString(std::to_string(score2nd));
+
+        //Set tank position
         tank1.setPosition(gameWidth/10.f, gameHeight - 50);
         tank2.setPosition(8 * gameWidth/10.f, gameHeight - 50);
-
-
 
         sf::Event event;
         while(window.pollEvent(event))
         {
+            //When escape key is pressed or window is closed, game ends
             if((event.type == sf::Event::Closed) ||
             ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
             {
@@ -121,6 +179,7 @@ int main()
             }
         }
 
+        //Aiming movement
         if(event.type == sf::Event::MouseMoved)
         {
             if(!setAngle)
@@ -133,13 +192,15 @@ int main()
                 clampy = wp.clamp(mousey, tankCenter.y - radiusAim, tankCenter.y);
                 float x;
                 if(turn1)x = std::sqrt(std::pow(100, 2.f) - (std::pow((clampy - tankCenter.y), 2.f))) + tankCenter.x;
-                if(turn2)x = std::sqrt(std::pow(100, 2.f) - (std::pow((clampy - tankCenter.y), 2.f))) + tankCenter.x;
+                if(turn2)x = -1 * (std::sqrt(std::pow(100, 2.f) - (std::pow((clampy - tankCenter.y), 2.f))) - tankCenter.x);
                 if(turn1)clampx = wp.clamp(x, tankCenter.x, tankCenter.x + radiusAim);
-                if(turn2)clampx = wp.clamp(x, tankCenter.x, tankCenter.x - radiusAim);
+                if(turn2)clampx = wp.clamp(x, tankCenter.x - radiusAim, tankCenter.x);
+                //std::cout << x <<endl;
                 cannon.setPosition(clampx, clampy);
             }
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+            //Charging power
         {
             if(turn1) fillPowerbar.setPosition(tank1.getPosition().x, tank1.getPosition().y - 30);
             if(turn2) fillPowerbar.setPosition(tank2.getPosition().x - 50, tank1.getPosition().y - 30);
@@ -166,23 +227,30 @@ int main()
             setAngle = true;
         }
         if((event.type == sf::Event::KeyReleased))
+            //Charging and aiming is finished
            {
                 fillPowerbar.setFillColor(sf::Color::Black);
                 fillPowerbar.setPosition(0, 0);
                 float deltaY = tankCenter.y - clampy;
                 float deltaX = clampx - tankCenter.x;
+                if(turn2) deltaX *= -1;
                 //std::cout << deltaX << " " << deltaY << " " <<endl;
                 angle = (std::atan(deltaY/deltaX) * (180/PI));
+                //std::cout << angle <<endl;
                 initVelo = wp.initialVelocity((float) power *40.0, angle);
-                if(turn2) initVelo.x = -1 * initVelo.x;
+                if(turn2) initVelo.x *= -1;
+                //if(turn2) initVelo.x = -1 * initVelo.x;
                 //initVelo = Vector(((float) power *10000) * std::cos(angle), -1 * ((float) power *10000) * std::sin(angle));
                 //std::cout << initVelo.y << " " << endl;
                 isFiring = true;
+                //std::cout<< "A" << endl;
+                first = true;
            }
 
         //State where the ball is fired
         if(isFiring)
         {
+                std::cout << first;
                 sf::Vector2f cur = cannon.getPosition();
                 Vector c(cur.x, cur.y);
                 Vector a;
@@ -201,20 +269,22 @@ int main()
                         {
                             turn1 = false;
                             turn2 = true;
+                            score1st++;
                         }
                         else if(turn2)
                         {
                             turn2 = false;
                             turn1 = true;
+                            score2nd++;
                         }
                         setAngle = false;
                         power = 2;
-                        isFiring = false;
-                        initVelo.x = 0;
-                        initVelo.y = 0;
+                        newRound = true;
+                        cannon.setPosition(0,0);
+                        //first = true;
                         //clock.restart();
                     }
-                if(cen.x + radiusCannon > gameWidth || cen.x - radiusCannon < 0)
+                if(a.x > gameWidth || a.x < 0)
                     {
                         if(turn1)
                         {
@@ -229,11 +299,12 @@ int main()
                         setAngle = false;
                         power = 2;
                         isFiring = false;
+                        newRound = true;
+                        cannon.setPosition(0,0);
+                        //first = true;
                         //clock.restart();
-                        initVelo.x = 0;
-                        initVelo.y = 0;
                     }
-                if(cen.y + radiusCannon > gameHeight || cen.y - radiusCannon < 0)
+                if(a.y > gameHeight || a.y < 0)
                     {
                         if(turn1)
                         {
@@ -252,11 +323,14 @@ int main()
                         setAngle = false;
                         power = 2;
                         isFiring = false;
+                        newRound = true;
+                        cannon.setPosition(0,0);
+                        //first = true;
                         //clock.restart();
-                        initVelo.x = 0;
-                        initVelo.y = 0;
                     }
                 first = false;
+                //std::cout<< "X: " << a.x <<endl;
+                //std::cout<< "Y: " << a.y <<endl;
         }
 
 
@@ -269,20 +343,24 @@ int main()
         window.draw(tank2);
         window.draw(cannon);
         window.draw(fillPowerbar);
-
+        window.draw(txt);
+        window.draw(windVal);
+        window.draw(score1);
+        window.draw(score2);
         //Display on Screen
         window.display();
 
         //Sleep
+        //time translated to seconds
         float post = clock.getElapsedTime().asSeconds();
         if(post < dt)
         {
             sf::Time sle = sf::seconds(dt - post);
             sf::sleep(sle);
         }
+
+        //Restart clock
         clock.restart();
     }
-
-
     return EXIT_SUCCESS;
 }
