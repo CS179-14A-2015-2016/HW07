@@ -5,7 +5,7 @@
 using namespace std;
 
 mt19937 mt(time(NULL));
-uniform_int_distribution<int> dist(1, 250);
+uniform_int_distribution<int> dist(1, 125);
 Vector comp;
 
 float WormProcess::clamp(float value, float min, float max)
