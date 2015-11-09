@@ -103,7 +103,7 @@ int main()
     //txt.setPosition(gameWidth/2.f -200, gameHeight/2.f);
     txt.setColor(sf::Color::White);
     txt.setPosition((gameWidth/2.f) - 100,-150);
-    //txt.setString("123456789101112131415161718192021222324252627282930AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
 
     //Wind value text object
     sf::Text windVal;
@@ -185,16 +185,16 @@ int main()
             if(!setAngle)
             {
                 sf::Vector2i pos = sf::Mouse::getPosition(window);
-                float mousey = (float) pos.y;
+                //float mousey = (float) pos.y;
                 if(turn1) tankCenter.x = (gameWidth/10.f) + 35;
                 if(turn2) tankCenter.x = (8 * (gameWidth/10.f) + 35);
                 tankCenter.y = gameHeight - 25;
-                clampy = wp.clamp(mousey, tankCenter.y - radiusAim, tankCenter.y);
-                float x;
-                if(turn1)x = std::sqrt(std::pow(100, 2.f) - (std::pow((clampy - tankCenter.y), 2.f))) + tankCenter.x;
-                if(turn2)x = -1 * (std::sqrt(std::pow(100, 2.f) - (std::pow((clampy - tankCenter.y), 2.f))) - tankCenter.x);
-                if(turn1)clampx = wp.clamp(x, tankCenter.x, tankCenter.x + radiusAim);
-                if(turn2)clampx = wp.clamp(x, tankCenter.x - radiusAim, tankCenter.x);
+                Vector cenToMouse(pos.x - tankCenter.x, pos.y - tankCenter.y);
+                Vector norm = cenToMouse.vectorNormalize(cenToMouse);
+                Vector relPos = norm.scalarMult(norm, 100);
+                Vector actPosition = relPos.vectorAdd(relPos, tankCenter);
+                clampx = actPosition.x;
+                clampy = actPosition.y;
                 //std::cout << x <<endl;
                 cannon.setPosition(clampx, clampy);
             }
@@ -234,23 +234,16 @@ int main()
                 float deltaY = tankCenter.y - clampy;
                 float deltaX = clampx - tankCenter.x;
                 if(turn2) deltaX *= -1;
-                //std::cout << deltaX << " " << deltaY << " " <<endl;
-                angle = (std::atan(deltaY/deltaX) * (180/PI));
-                //std::cout << angle <<endl;
+                angle = (std::atan2(deltaY, deltaX) * (180/PI));
                 initVelo = wp.initialVelocity((float) power *40.0, angle);
                 if(turn2) initVelo.x *= -1;
-                //if(turn2) initVelo.x = -1 * initVelo.x;
-                //initVelo = Vector(((float) power *10000) * std::cos(angle), -1 * ((float) power *10000) * std::sin(angle));
-                //std::cout << initVelo.y << " " << endl;
                 isFiring = true;
-                //std::cout<< "A" << endl;
                 first = true;
            }
 
         //State where the ball is fired
         if(isFiring)
         {
-                std::cout << first;
                 sf::Vector2f cur = cannon.getPosition();
                 Vector c(cur.x, cur.y);
                 Vector a;
@@ -281,8 +274,6 @@ int main()
                         power = 2;
                         newRound = true;
                         cannon.setPosition(0,0);
-                        //first = true;
-                        //clock.restart();
                     }
                 if(a.x > gameWidth || a.x < 0)
                     {
@@ -301,8 +292,6 @@ int main()
                         isFiring = false;
                         newRound = true;
                         cannon.setPosition(0,0);
-                        //first = true;
-                        //clock.restart();
                     }
                 if(a.y > gameHeight || a.y < 0)
                     {
@@ -325,12 +314,9 @@ int main()
                         isFiring = false;
                         newRound = true;
                         cannon.setPosition(0,0);
-                        //first = true;
-                        //clock.restart();
                     }
                 first = false;
-                //std::cout<< "X: " << a.x <<endl;
-                //std::cout<< "Y: " << a.y <<endl;
+
         }
 
 
