@@ -21,14 +21,46 @@ bool round_fired = 0;
 double fps = 60;
 sf::Time mspf = sf::milliseconds(1000/fps);
 
-double player_1_position_x = window_width/8;
-double player_1_position_y = window_height*3/4 - player_height/2;
-double player_2_position_x = window_width*7/8;
-double player_2_position_y = window_height*3/4 - player_height/2;
+class My_Vector
+{
+    double x, y;
 
-double acceleration_gravity_per_frame = 9.8/fps;
-double acceleration_wind_per_frame = 0;
-string acceleration_wind_per_frame_string;
+public:
+    My_Vector(double, double);
+    double Get_X()
+    {
+        return x;
+    }
+    double Get_Y()
+    {
+        return y;
+    }
+    void Set_X(double a)
+    {
+        x = a;
+    }
+    void Set_Y(double b)
+    {
+        y = b;
+    }
+};
+
+My_Vector::My_Vector(double a, double b)
+{
+    x = a;
+    y = b;
+}
+
+//double player_1_position_x = window_width/8;
+//double player_1_position_y = window_height*3/4 - player_height/2;
+//double player_2_position_x = window_width*7/8;
+//double player_2_position_y = window_height*3/4 - player_height/2;
+
+//double acceleration_gravity_per_frame = 9.8/fps;
+//double acceleration_wind_per_frame = 0;
+//string acceleration_wind_per_frame_string;
+double acceleration_wind = 0;
+string acceleration_wind_string;
 double round_velocity;
 string round_velocity_string;
 double round_velocity_x;
@@ -63,6 +95,15 @@ string make_string(double x)
 
 int main()
 {
+    My_Vector player_1_position(window_width/8, window_height*3/4 - player_height/2);
+    My_Vector player_2_position(window_width*7/8, window_height*3/4 - player_height/2);
+    My_Vector acceleration_gravity_per_frame_vector(0,9.8/fps);
+    My_Vector acceleration_wind_per_frame_vector(0,0);
+    My_Vector round_position_vector(0,0);
+    My_Vector round_velocity_vector(0,0);
+    My_Vector distance_round_prime_vector(0,0);
+
+
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Simple Worms", sf::Style::Close);
 
     sf::RectangleShape land(sf::Vector2f(window_width, window_height/4));
@@ -76,12 +117,14 @@ int main()
     sf::RectangleShape player_1(sf::Vector2f(player_width, player_height));
     player_1.setFillColor(sf::Color(100,149,237));
     player_1.setOrigin(player_width/2, player_height/2);
-    player_1.setPosition(player_1_position_x, player_1_position_y);
+    //player_1.setPosition(player_1_position_x, player_1_position_y);
+    player_1.setPosition(player_1_position.Get_X(), player_1_position.Get_Y());
 
     sf::RectangleShape player_2(sf::Vector2f(player_width, player_height));
     player_2.setFillColor(sf::Color(255,99,71));
     player_2.setOrigin(player_width/2, player_height/2);
-    player_2.setPosition(player_2_position_x, player_2_position_y);
+    //player_2.setPosition(player_2_position_x, player_2_position_y);
+    player_2.setPosition(player_2_position.Get_X(), player_2_position.Get_Y());
 
     sf::CircleShape player_1_round(round_radius);
     player_1_round.setFillColor(sf::Color(100,109,237));
@@ -111,12 +154,14 @@ int main()
     sf::Text score_player_1_display;
     score_player_1_display.setFont(font);
     score_player_1_display.setColor(sf::Color(100,149,237));
-    score_player_1_display.setPosition(player_1_position_x - player_width/2, 80);
+    //score_player_1_display.setPosition(player_1_position_x - player_width/2, 80);
+    score_player_1_display.setPosition(player_1_position.Get_X() - player_width/2, 80);
 
     sf::Text score_player_2_display;
     score_player_2_display.setFont(font);
     score_player_2_display.setColor(sf::Color(255,99,71));
-    score_player_2_display.setPosition(player_2_position_x - player_width/2, 80);
+    //score_player_2_display.setPosition(player_2_position_x - player_width/2, 80);
+    score_player_2_display.setPosition(player_2_position.Get_X() - player_width/2, 80);
 
     sf::Text shot_angle_display;
     shot_angle_display.setFont(font);
@@ -146,8 +191,10 @@ int main()
     **/
 
     mt19937 gen(time(0));
-    uniform_real_distribution<> dist(-0.25,0.25);
-    acceleration_wind_per_frame = dist(gen);
+    uniform_real_distribution<> dist(-3,3);
+    //acceleration_wind_per_frame = dist(gen);
+    acceleration_wind = dist(gen);
+    acceleration_wind_per_frame_vector.Set_X(acceleration_wind/fps);
 
     while (window.isOpen())
     {
@@ -231,15 +278,19 @@ int main()
 
                 if (player_1_turn == 1)
                 {
-                    round_position_x = player_1_position_x;
-                    round_position_y = player_1_position_y;
+                    //round_position_x = player_1_position_x;
+                    round_position_x = player_1_position.Get_X();
+                    //round_position_y = player_1_position_y;
+                    round_position_y = player_1_position.Get_Y();
 
                     //round_velocity_x = round_velocity * sin((-90 + round_angle)*pi/180);
                 }
                 else
                 {
-                    round_position_x = player_2_position_x;
-                    round_position_y = player_2_position_y;
+                    //round_position_x = player_2_position_x;
+                    round_position_x = player_2_position.Get_X();
+                    //round_position_y = player_2_position_y;
+                    round_position_y = player_2_position.Get_Y();
 
                     //round_velocity_x = -1 * round_velocity * sin((-90 + round_angle)*pi/180);
                 }
@@ -263,14 +314,20 @@ int main()
         shot_angle_display.setString(round_angle_string);
 
         round_velocity_string = "Power: ";
-        round_velocity_string.append(make_string(round_velocity*-1*60));
-        round_velocity_string.append(" units / second");
+        round_velocity_string.append(make_string(round_velocity*-1));
+        //round_velocity_string.append(make_string(round_velocity*-1*60));
+        round_velocity_string.append(" units");
+        //round_velocity_string.append(" units / second");
         shot_power_display.setString(round_velocity_string);
 
-        acceleration_wind_per_frame_string = "Wind: ";
-        acceleration_wind_per_frame_string.append(make_string(acceleration_wind_per_frame*60));
-        acceleration_wind_per_frame_string.append(" units / second");
-        wind_display.setString(acceleration_wind_per_frame_string);
+        //acceleration_wind_per_frame_string = "Wind: ";
+        acceleration_wind_string = "Wind: ";
+        //acceleration_wind_per_frame_string.append(make_string(acceleration_wind_per_frame*60));
+        acceleration_wind_string.append(make_string(acceleration_wind));
+        //acceleration_wind_per_frame_string.append(" units / second");
+        acceleration_wind_string.append(" units / second");
+        //wind_display.setString(acceleration_wind_per_frame_string);
+        wind_display.setString(acceleration_wind_string);
 
         //core
         if (player_1_turn == 1)
@@ -280,8 +337,10 @@ int main()
 
             player_1_round.setPosition(round_position_x, round_position_y);
 
-            distance_round_x_prime = max(player_2_position_x-player_width/2, min(player_2_position_x+player_width/2, round_position_x));
-            distance_round_y_prime = max(player_2_position_y-player_height/2, min(player_2_position_y+player_height/2, round_position_y));
+            //distance_round_x_prime = max(player_2_position_x-player_width/2, min(player_2_position_x+player_width/2, round_position_x));
+            distance_round_x_prime = max(player_2_position.Get_X()-player_width/2, min(player_2_position.Get_X()+player_width/2, round_position_x));
+            //distance_round_y_prime = max(player_2_position_y-player_height/2, min(player_2_position_y+player_height/2, round_position_y));
+            distance_round_y_prime = max(player_2_position.Get_Y()-player_height/2, min(player_2_position.Get_Y()+player_height/2, round_position_y));
 
             distance_round_position_to_prime = pow(round_position_x-distance_round_x_prime, 2) + pow(round_position_y-distance_round_y_prime, 2);
 
@@ -294,7 +353,9 @@ int main()
                 player_1_round.setPosition(round_position_x, round_position_y);
                 player_1_turn = !player_1_turn;
                 player_1_score++;
-                acceleration_wind_per_frame = dist(gen);
+                //acceleration_wind_per_frame = dist(gen);
+                acceleration_wind = dist(gen);
+                acceleration_wind_per_frame_vector.Set_X(acceleration_wind/fps);
             }
         }
         else
@@ -304,8 +365,10 @@ int main()
 
             player_2_round.setPosition(round_position_x, round_position_y);
 
-            distance_round_x_prime = max(player_1_position_x-player_width/2, min(player_1_position_x+player_width/2, round_position_x));
-            distance_round_y_prime = max(player_1_position_y-player_height/2, min(player_1_position_y+player_height/2, round_position_y));
+            //distance_round_x_prime = max(player_1_position_x-player_width/2, min(player_1_position_x+player_width/2, round_position_x));
+            distance_round_x_prime = max(player_1_position.Get_X()-player_width/2, min(player_1_position.Get_X()+player_width/2, round_position_x));
+            //distance_round_y_prime = max(player_1_position_y-player_height/2, min(player_1_position_y+player_height/2, round_position_y));
+            distance_round_y_prime = max(player_1_position.Get_Y()-player_height/2, min(player_1_position.Get_Y()+player_height/2, round_position_y));
 
             distance_round_position_to_prime = pow(round_position_x-distance_round_x_prime, 2) + pow(round_position_y-distance_round_y_prime, 2);
 
@@ -318,17 +381,21 @@ int main()
                 player_2_round.setPosition(round_position_x, round_position_y);
                 player_1_turn = !player_1_turn;
                 player_2_score++;
-                acceleration_wind_per_frame = dist(gen);
+                //acceleration_wind_per_frame = dist(gen);
+                acceleration_wind = dist(gen);
+                acceleration_wind_per_frame_vector.Set_X(acceleration_wind/fps);
             }
         }
 
         if (round_fired == 1)
         {
-            round_velocity_x += acceleration_wind_per_frame;
-            round_position_x += round_velocity_x;
-            round_velocity_y += acceleration_gravity_per_frame;
-            round_position_y += round_velocity_y;
+            //round_velocity_x += acceleration_wind_per_frame;
+            round_velocity_x += acceleration_wind_per_frame_vector.Get_X();
+            //round_velocity_y += acceleration_gravity_per_frame;
+            round_velocity_y += acceleration_gravity_per_frame_vector.Get_Y();
             //player_1_round.setPosition(round_position_x, round_position_y);
+            round_position_x += round_velocity_x;
+            round_position_y += round_velocity_y;
         }
 
 
@@ -357,17 +424,21 @@ int main()
 
             if (player_1_turn == 1)
             {
-                round_position_x = player_1_position_x;
-                round_position_y = player_1_position_y;
+                round_position_x = player_1_position.Get_X();
+                round_position_y = player_1_position.Get_Y();
             }
             else
             {
-                round_position_x = player_2_position_x;
-                round_position_y = player_2_position_y;
+                //round_position_x = player_2_position_x;
+                round_position_x = player_2_position.Get_X();
+                //round_position_y = player_2_position_y;
+                round_position_y = player_2_position.Get_Y();
             }
             round_velocity_x = 0;
             round_velocity_y = 0;
-            acceleration_wind_per_frame = dist(gen);
+            //acceleration_wind_per_frame = dist(gen);
+            acceleration_wind = dist(gen);
+            acceleration_wind_per_frame_vector.Set_X(acceleration_wind/fps);
         }
 
 
