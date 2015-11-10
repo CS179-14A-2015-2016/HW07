@@ -1,0 +1,19 @@
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\csfml-audio-2.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\csfml-graphics-2.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\csfml-network-2.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\csfml-system-2.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\csfml-window-2.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\libsndfile-1.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\openal32.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\OpenTK.Compatibility.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\OpenTK.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\[CS179.14] HW7 - Worchbound 1.5.pdb
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\sfmlnet-audio-2.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\sfmlnet-graphics-2.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\sfmlnet-system-2.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\sfmlnet-window-2.dll
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\obj\x86\Debug\[CS179.14] HW7 - Worchbound 1.5.pdb
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\[CS179.14] HW7 - Worchbound 1.5.exe.config
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\bin\x86\Debug\[CS179.14] HW7 - Worchbound 1.5.exe
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\obj\x86\Debug\[CS179.14] HW7 - Worchbound 1.5.exe
+C:\Users\Bryan Zerrudo\documents\visual studio 2015\Projects\[CS179.14] HW7 - Worchbound 1.5\[CS179.14] HW7 - Worchbound 1.5\obj\x86\Debug\Worchbound.csprojResolveAssemblyReference.cache
